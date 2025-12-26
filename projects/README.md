@@ -13,7 +13,7 @@
 | `multi-downloader/`        | 多线程下载器     | Phase 5  | ⏳   |
 | `mini-spring/`             | 简易 Spring IoC  | Phase 8  | ⏳   |
 | `restful-api/`             | RESTful API 服务 | Phase 9  | ⏳   |
-| `ecommerce-microservices/` | 微服务电商系统   | Phase 10 | ⏳   |
+| `ecommerce-microservices/` | 微服务电商系统   | Phase 10 | ✅   |
 | `order-management/`        | 订单管理系统     | Phase 11 | ⏳   |
 | `seckill-system/`          | 秒杀系统         | Phase 12 | ⏳   |
 | `k8s-deployment/`          | K8s 部署项目     | Phase 14 | ⏳   |
