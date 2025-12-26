@@ -2,7 +2,8 @@
 
 > **目标**：掌握架构设计方法论与核心模式  
 > **前置要求**：完成 Phase 1-14（资深工程师阶段）  
-> **预计时长**：2 周（第 25-26 周）
+> **预计时长**：2 周（第 25-26 周）  
+> **状态**: ✅ 学习资料已创建
 
 ---
 
@@ -19,59 +20,73 @@
 
 ## 📚 课程内容
 
+### 核心概念
+
+| 文件                       | 描述         | 知识点         |
+| -------------------------- | ------------ | -------------- |
+| [CONCEPT.md](./CONCEPT.md) | 核心概念文档 | 架构设计全景图 |
+
 ### 第 25 周：架构设计原则
 
-#### 架构基础理论
-
-| 文件                          | 主题                 | 核心知识点                           |
-| ----------------------------- | -------------------- | ------------------------------------ |
-| `ArchitecturePrinciples.java` | CAP/BASE 理论        | CAP 定理、BASE 理论、一致性权衡      |
-| `SolidInArch.java`            | SOLID 在架构中的应用 | 单一职责、开闭原则在系统设计中的应用 |
-| `TwelveFactorApp.java`        | 12-Factor 应用原则   | 云原生应用设计最佳实践               |
-
-#### 架构模式
-
-| 文件                           | 主题         | 核心知识点                  |
-| ------------------------------ | ------------ | --------------------------- |
-| `LayeredArchitecture.java`     | 分层架构     | 传统三层/四层架构、职责分离 |
-| `HexagonalArchitecture.java`   | 六边形架构   | 端口与适配器、领域核心隔离  |
-| `EventDrivenArchitecture.java` | 事件驱动架构 | 事件发布订阅、松耦合设计    |
+| 文件                                                         | 主题     | 核心知识点                   |
+| ------------------------------------------------------------ | -------- | ---------------------------- |
+| [ArchitecturePrinciples.java](./ArchitecturePrinciples.java) | 架构原则 | CAP/BASE 理论、12-Factor App |
+| [ArchitecturePatterns.java](./ArchitecturePatterns.java)     | 架构模式 | 分层、六边形、事件驱动架构   |
 
 ### 第 26 周：领域驱动设计
 
-#### DDD 核心概念
-
-| 文件                 | 主题         | 核心知识点             |
-| -------------------- | ------------ | ---------------------- |
-| `DomainModel.java`   | 领域模型设计 | 实体、值对象、领域服务 |
-| `AggregateRoot.java` | 聚合根与边界 | 聚合设计、一致性边界   |
-| `DomainEvent.java`   | 领域事件     | 事件建模、事件驱动业务 |
-
-#### CQRS 与事件溯源
-
-| 文件                 | 主题             | 核心知识点         |
-| -------------------- | ---------------- | ------------------ |
-| `CqrsDemo.java`      | 命令查询职责分离 | 读写分离、命令处理 |
-| `EventSourcing.java` | 事件溯源实现     | 事件存储、状态重建 |
+| 文件                                                 | 主题      | 核心知识点                    |
+| ---------------------------------------------------- | --------- | ----------------------------- |
+| [DomainDrivenDesign.java](./DomainDrivenDesign.java) | DDD 设计  | 战略/战术设计、聚合、领域事件 |
+| [CqrsEventSourcing.java](./CqrsEventSourcing.java)   | CQRS & ES | 命令查询分离、事件溯源        |
 
 ---
 
-## 🎯 实战项目：电商系统领域建模
+## 🚀 运行方式
 
-### 项目目标
+```bash
+# 进入项目目录
+cd /Users/perlou/Desktop/personal/java-course
 
-使用 DDD 方法论对电商系统进行领域建模，包括：
+# 编译项目
+mvn compile
 
-- 识别核心域、支撑域和通用域
-- 设计限界上下文及上下文映射
-- 定义聚合根、实体和值对象
-- 实现领域事件驱动的业务流程
+# 运行课程
+mvn exec:java -Dexec.mainClass="phase15.ArchitecturePrinciples"
+mvn exec:java -Dexec.mainClass="phase15.ArchitecturePatterns"
+mvn exec:java -Dexec.mainClass="phase15.DomainDrivenDesign"
+mvn exec:java -Dexec.mainClass="phase15.CqrsEventSourcing"
+```
 
-### 技术栈
+---
 
-- Java 17
-- Spring Boot 3.x
-- Axon Framework（可选）
+## 📖 学习建议
+
+### 学习顺序
+
+```
+Week 1: 架构原则与模式
+├── Day 1-2: 阅读 CONCEPT.md，理解架构全景图
+├── Day 3-4: CAP/BASE 理论，12-Factor App
+└── Day 5-7: 架构模式（分层、六边形、事件驱动）
+
+Week 2: DDD 与高级模式
+├── Day 1-2: DDD 战略设计（限界上下文、子域）
+├── Day 3-4: DDD 战术设计（实体、值对象、聚合）
+└── Day 5-7: CQRS 与事件溯源
+```
+
+### 核心知识点
+
+| 概念       | 描述                           |
+| ---------- | ------------------------------ |
+| CAP 定理   | 一致性、可用性、分区容错三选二 |
+| BASE 理论  | 基本可用、软状态、最终一致     |
+| 六边形架构 | 端口与适配器，领域核心隔离     |
+| 限界上下文 | DDD 战略设计核心，划分系统边界 |
+| 聚合       | DDD 战术设计核心，一致性边界   |
+| CQRS       | 读写分离，独立优化             |
+| 事件溯源   | 存储事件序列而非状态           |
 
 ---
 
@@ -87,6 +102,7 @@
 
 - [Martin Fowler's Architecture Articles](https://martinfowler.com/architecture/)
 - [The Twelve-Factor App](https://12factor.net/)
+- [Microsoft CQRS Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 
 ---
 
@@ -95,7 +111,12 @@
 完成本阶段后，请确认：
 
 - [ ] 能够解释 CAP 定理并举例说明权衡场景
+- [ ] 理解 12-Factor App 各项原则
 - [ ] 理解并能应用六边形架构设计服务
 - [ ] 能够识别并划分限界上下文
-- [ ] 掌握聚合设计原则
-- [ ] 完成电商系统领域建模项目
+- [ ] 掌握实体、值对象、聚合的区别
+- [ ] 理解 CQRS 与事件溯源的适用场景
+
+---
+
+> 📝 完成本阶段后，请更新 `LEARNING_PLAN.md`，然后进入 [Phase 16](../phase16/README.md)
