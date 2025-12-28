@@ -1,11 +1,9 @@
 package phase12;
 
-import java.util.List;
-
 /**
  * Phase 12 - 实战项目: 秒杀系统
  * 
- * 🎯 项目目标:
+ * 学习目标:
  * 1. 综合运用 Redis、MQ、分布式锁
  * 2. 解决高并发库存扣减问题
  * 3. 实现稳定可靠的秒杀功能
@@ -19,68 +17,99 @@ public class SeckillProject {
 
         // 1. 项目概述
         System.out.println("\n【1. 项目概述】");
-        System.out.println("""
-                ┌─────────────────────────────────────────────────────────┐
-                │                    秒杀系统架构                          │
-                ├─────────────────────────────────────────────────────────┤
-                │                                                         │
-                │  ┌─────────┐    ┌─────────┐    ┌─────────┐            │
-                │  │ 用户请求│───▶│ Gateway │───▶│ 限流    │            │
-                │  └─────────┘    └─────────┘    └─────────┘            │
-                │                                     │                   │
-                │                                     ▼                   │
-                │                              ┌─────────┐               │
-                │                              │秒杀服务 │               │
-                │                              └─────────┘               │
-                │                                     │                   │
-                │                    ┌────────────────┼────────────────┐ │
-                │                    ▼                ▼                ▼ │
-                │              ┌─────────┐    ┌─────────┐    ┌─────────┐│
-                │              │  Redis  │    │   MQ    │    │  MySQL  ││
-                │              │库存预扣 │    │异步下单 │    │数据持久 ││
-                │              └─────────┘    └─────────┘    └─────────┘│
-                │                                                         │
-                └─────────────────────────────────────────────────────────┘
-
-                核心挑战:
-                ┌──────────────────┬──────────────────────────────────────┐
-                │       问题       │             解决方案                  │
-                ├──────────────────┼──────────────────────────────────────┤
-                │ 高并发请求       │ 限流、降级、熔断                     │
-                │ 超卖问题         │ Redis 预扣 + 分布式锁               │
-                │ 数据库压力       │ 异步下单、MQ 削峰                   │
-                │ 用户体验         │ 库存预热、前端限流                   │
-                └──────────────────┴──────────────────────────────────────┘
-                """);
+        showProjectOverview();
 
         // 2. 系统设计
         System.out.println("=".repeat(60));
         System.out.println("【2. 系统设计】");
+        showSystemDesign();
+
+        // 3. 库存预扣
+        System.out.println("=".repeat(60));
+        System.out.println("【3. Redis 库存预扣】");
+        showStockDeduction();
+
+        // 4. 异步下单
+        System.out.println("=".repeat(60));
+        System.out.println("【4. MQ 异步下单】");
+        showAsyncOrder();
+
+        // 5. 限流和降级
+        System.out.println("=".repeat(60));
+        System.out.println("【5. 限流和降级】");
+        showRateLimiting();
+
+        // 6. 项目结构
+        System.out.println("=".repeat(60));
+        System.out.println("【6. 项目结构】");
+        showProjectStructure();
+
+        // 7. 开发建议
+        System.out.println("=".repeat(60));
+        System.out.println("【7. 开发建议】");
+        showDevelopmentGuide();
+
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("[!] 核心: Redis 预扣 + MQ 异步 + 限流保护");
+        System.out.println("[!] Lua 脚本保证库存扣减原子性");
+        System.out.println("[!] 多重检查防止超卖和重复购买");
+        System.out.println("=".repeat(60));
+    }
+
+    private static void showProjectOverview() {
+        System.out.println("""
+                +-----------------------------------------------------------+
+                |                    秒杀系统架构                            |
+                +-----------------------------------------------------------+
+                |                                                           |
+                |  [用户请求] --> [Gateway] --> [限流] --> [秒杀服务]       |
+                |                                              |            |
+                |                      +------------------------+            |
+                |                      |           |            |            |
+                |                      v           v            v            |
+                |                   [Redis]     [MQ]       [MySQL]          |
+                |                   库存预扣   异步下单    数据持久          |
+                |                                                           |
+                +-----------------------------------------------------------+
+
+                核心挑战:
+                +------------------+--------------------------------------+
+                |       问题       |             解决方案                  |
+                +------------------+--------------------------------------+
+                | 高并发请求       | 限流、降级、熔断                     |
+                | 超卖问题         | Redis 预扣 + 分布式锁               |
+                | 数据库压力       | 异步下单、MQ 削峰                   |
+                | 用户体验         | 库存预热、前端限流                   |
+                +------------------+--------------------------------------+
+                """);
+    }
+
+    private static void showSystemDesign() {
         System.out.println("""
                 秒杀流程:
 
-                ┌───────────────────────────────────────────────────────────┐
-                │  1. 秒杀开始前:                                          │
-                │     - 将商品库存预热到 Redis                             │
-                │     - 生成秒杀令牌                                       │
-                │                                                           │
-                │  2. 用户请求:                                            │
-                │     - 验证秒杀资格 (登录、活动时间)                      │
-                │     - 检查是否已购买 (防止重复)                          │
-                │     - Redis 预扣库存 (DECR)                              │
-                │                                                           │
-                │  3. 预扣成功:                                            │
-                │     - 发送 MQ 消息，异步创建订单                         │
-                │     - 返回 "排队中"                                      │
-                │                                                           │
-                │  4. 订单服务消费:                                        │
-                │     - 扣减数据库库存                                     │
-                │     - 创建订单                                           │
-                │                                                           │
-                │  5. 用户轮询:                                            │
-                │     - 查询订单状态                                       │
-                │     - 显示结果                                           │
-                └───────────────────────────────────────────────────────────┘
+                +-----------------------------------------------------------+
+                |  1. 秒杀开始前:                                          |
+                |     - 将商品库存预热到 Redis                             |
+                |     - 生成秒杀令牌                                       |
+                |                                                           |
+                |  2. 用户请求:                                            |
+                |     - 验证秒杀资格 (登录、活动时间)                      |
+                |     - 检查是否已购买 (防止重复)                          |
+                |     - Redis 预扣库存 (DECR)                              |
+                |                                                           |
+                |  3. 预扣成功:                                            |
+                |     - 发送 MQ 消息，异步创建订单                         |
+                |     - 返回 "排队中"                                      |
+                |                                                           |
+                |  4. 订单服务消费:                                        |
+                |     - 扣减数据库库存                                     |
+                |     - 创建订单                                           |
+                |                                                           |
+                |  5. 用户轮询:                                            |
+                |     - 查询订单状态                                       |
+                |     - 显示结果                                           |
+                +-----------------------------------------------------------+
 
                 数据库设计:
 
@@ -106,10 +135,9 @@ public class SeckillProject {
                     UNIQUE KEY uk_user_goods (user_id, goods_id)  -- 一人一单
                 );
                 """);
+    }
 
-        // 3. 库存预扣
-        System.out.println("=".repeat(60));
-        System.out.println("【3. Redis 库存预扣】");
+    private static void showStockDeduction() {
         System.out.println("""
                 1. 库存预热
 
@@ -167,17 +195,17 @@ public class SeckillProject {
                     private final StringRedisTemplate redis;
                     private final RocketMQTemplate mq;
 
-                    private static final String LUA_SCRIPT = """
-                        local stock = tonumber(redis.call('GET', KEYS[1]))
-                        if stock <= 0 then return 0 end
-                        local bought = redis.call('SISMEMBER', KEYS[2], ARGV[1])
-                        if bought == 1 then return -1 end
-                        redis.call('DECR', KEYS[1])
-                        redis.call('SADD', KEYS[2], ARGV[1])
-                        return 1
-                        """;
+                    // Lua 脚本定义
+                    private static final String LUA_SCRIPT =
+                        "local stock = tonumber(redis.call('GET', KEYS[1])) " +
+                        "if stock <= 0 then return 0 end " +
+                        "local bought = redis.call('SISMEMBER', KEYS[2], ARGV[1]) " +
+                        "if bought == 1 then return -1 end " +
+                        "redis.call('DECR', KEYS[1]) " +
+                        "redis.call('SADD', KEYS[2], ARGV[1]) " +
+                        "return 1";
 
-    public Result doSeckill(Long userId, Long goodsId) {
+                    public Result doSeckill(Long userId, Long goodsId) {
                         // 执行 Lua 脚本
                         Long result = redis.execute(
                             new DefaultRedisScript<>(LUA_SCRIPT, Long.class),
@@ -198,10 +226,12 @@ public class SeckillProject {
 
                         return Result.success("排队中，请稍后查询");
                     }
-}""");
+                }
+                """);
+    }
 
-// 4. 异步下单
-System.out.println("=".repeat(60));System.out.println("【4. MQ 异步下单】");System.out.println("""
+    private static void showAsyncOrder() {
+        System.out.println("""
                 @Service
                 @RocketMQMessageListener(
                     topic = "seckill-topic",
@@ -261,9 +291,10 @@ System.out.println("=".repeat(60));System.out.println("【4. MQ 异步下单】"
                     WHERE id = #{goodsId} AND stock_count > 0
                 </update>
                 """);
+    }
 
-// 5. 限流和降级
-System.out.println("=".repeat(60));System.out.println("【5. 限流和降级】");System.out.println("""
+    private static void showRateLimiting() {
+        System.out.println("""
                 1. Gateway 限流
 
                 spring:
@@ -304,9 +335,10 @@ System.out.println("=".repeat(60));System.out.println("【5. 限流和降级】"
                 - 倒计时结束才能点击
                 - 验证码/滑动验证
                 """);
+    }
 
-// 6. 项目结构
-System.out.println("=".repeat(60));System.out.println("【6. 项目结构】");System.out.println("""
+    private static void showProjectStructure() {
+        System.out.println("""
                 seckill-system/
                 ├── seckill-gateway/           # 网关服务
                 │   └── 限流配置
@@ -333,38 +365,39 @@ System.out.println("=".repeat(60));System.out.println("【6. 项目结构】");S
                     │   └── seckill.lua
                     └── application.yml
                 """);
+    }
 
-// 7. 开发步骤
-System.out.println("=".repeat(60));System.out.println("【7. 开发建议】");System.out.println("""
+    private static void showDevelopmentGuide() {
+        System.out.println("""
                 开发顺序:
-                ┌─────┬───────────────────────────────────────────────────┐
-                │ Day │ 任务                                              │
-                ├─────┼───────────────────────────────────────────────────┤
-                │  1  │ 项目搭建，数据库设计                              │
-                │  2  │ 秒杀商品管理 (CRUD)                               │
-                │  3  │ Redis 库存预热、Lua 脚本                          │
-                │  4  │ 秒杀接口、限流配置                                │
-                │  5  │ MQ 异步下单                                       │
-                │  6  │ 订单查询、状态同步                                │
-                │  7  │ 压测优化、问题修复                                │
-                └─────┴───────────────────────────────────────────────────┘
+                +-----+-----------------------------------------------------+
+                | Day | 任务                                                |
+                +-----+-----------------------------------------------------+
+                |  1  | 项目搭建，数据库设计                                |
+                |  2  | 秒杀商品管理 (CRUD)                                 |
+                |  3  | Redis 库存预热、Lua 脚本                            |
+                |  4  | 秒杀接口、限流配置                                  |
+                |  5  | MQ 异步下单                                         |
+                |  6  | 订单查询、状态同步                                  |
+                |  7  | 压测优化、问题修复                                  |
+                +-----+-----------------------------------------------------+
 
                 性能优化:
-                ✅ Redis 本地内存库存标记 (JVM 内存标记库存售罄)
-                ✅ 线程池异步处理
-                ✅ 热点数据预加载
-                ✅ 接口响应压缩
+                [OK] Redis 本地内存库存标记 (JVM 内存标记库存售罄)
+                [OK] 线程池异步处理
+                [OK] 热点数据预加载
+                [OK] 接口响应压缩
 
                 测试工具:
                 - JMeter 压力测试
                 - 模拟 1000 并发
                 - 观察库存扣减正确性
                 """);
-
-System.out.println("\n"+"=".repeat(60));System.out.println("💡 核心: Redis 预扣 + MQ 异步 + 限流保护");System.out.println("💡 Lua 脚本保证库存扣减原子性");System.out.println("💡 多重检查防止超卖和重复购买");System.out.println("=".repeat(60));}}
+    }
+}
 
 /*
- * 📚 项目知识点:
+ * 项目知识点:
  * 
  * 1. 高并发方案:
  * - Redis 缓存库存

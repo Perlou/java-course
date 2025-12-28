@@ -2,7 +2,8 @@
 
 > **目标**：掌握分布式存储与数据一致性  
 > **前置要求**：完成 Phase 16（高并发架构）  
-> **预计时长**：2 周（第 29-30 周）
+> **预计时长**：2 周（第 29-30 周）  
+> **状态**: ✅ 学习资料已创建
 
 ---
 
@@ -12,66 +13,108 @@
 
 1. 理解和使用 NewSQL 数据库（TiDB、CockroachDB）
 2. 掌握分布式一致性算法（Raft、Paxos）
-3. 设计数据湖与数据仓库架构
-4. 实现多数据源架构与缓存策略
+3. 理解 LSM-Tree 存储引擎原理
+4. 设计数据湖与多数据源架构
+5. 实现高效的缓存策略
 
 ---
 
 ## 📚 课程内容
 
-### 第 29 周：分布式数据库
+### 核心概念
+
+| 文件                       | 描述         | 知识点           |
+| -------------------------- | ------------ | ---------------- |
+| [CONCEPT.md](./CONCEPT.md) | 核心概念文档 | 分布式存储全景图 |
+
+### 第 29 周：分布式数据库与一致性
+
+#### 一致性与共识
+
+| 文件                                             | 主题           | 核心知识点                 |
+| ------------------------------------------------ | -------------- | -------------------------- |
+| [RaftDemo.java](./RaftDemo.java)                 | Raft 共识算法  | Leader 选举、日志复制      |
+| [ConsistencyModel.java](./ConsistencyModel.java) | 一致性模型对比 | 强一致、最终一致、因果一致 |
 
 #### NewSQL 数据库
 
-| 文件                   | 主题             | 核心知识点           |
-| ---------------------- | ---------------- | -------------------- |
-| `TiDBDemo.java`        | TiDB 使用与原理  | 分布式事务、水平扩展 |
-| `CockroachDBDemo.java` | CockroachDB 特性 | 强一致性、地理分布   |
-| `VitessDemo.java`      | Vitess 分片      | 分片策略、MySQL 扩展 |
+| 文件                             | 主题            | 核心知识点           |
+| -------------------------------- | --------------- | -------------------- |
+| [TiDBDemo.java](./TiDBDemo.java) | TiDB 使用与原理 | 分布式事务、水平扩展 |
 
-#### 一致性算法
+### 第 30 周：存储架构与缓存
 
-| 文件                    | 主题           | 核心知识点                 |
-| ----------------------- | -------------- | -------------------------- |
-| `RaftDemo.java`         | Raft 共识算法  | Leader 选举、日志复制      |
-| `PaxosDemo.java`        | Paxos 原理     | 提案接受、多数派           |
-| `ConsistencyModel.java` | 一致性模型对比 | 强一致、最终一致、因果一致 |
+#### 存储引擎
 
-### 第 30 周：数据架构
+| 文件                           | 主题          | 核心知识点         |
+| ------------------------------ | ------------- | ------------------ |
+| [LSMTree.java](./LSMTree.java) | LSM-Tree 原理 | 写优化、Compaction |
 
-#### 存储架构
+#### 数据架构
 
-| 文件                  | 主题          | 核心知识点          |
-| --------------------- | ------------- | ------------------- |
-| `DataLakeDesign.java` | 数据湖架构    | 湖仓一体、数据分层  |
-| `DataWarehouse.java`  | 数据仓库设计  | 星型/雪花模型、OLAP |
-| `LSMTree.java`        | LSM-Tree 原理 | 写优化、Compaction  |
+| 文件                                                   | 主题       | 核心知识点         |
+| ------------------------------------------------------ | ---------- | ------------------ |
+| [DataLakeDesign.java](./DataLakeDesign.java)           | 数据湖架构 | 湖仓一体、数据分层 |
+| [PolyglotPersistence.java](./PolyglotPersistence.java) | 多模存储   | 存储选型、混合架构 |
 
-#### 多数据源架构
+#### 缓存策略
 
-| 文件                       | 主题     | 核心知识点                 |
-| -------------------------- | -------- | -------------------------- |
-| `PolyglotPersistence.java` | 多模存储 | 不同存储引擎选型           |
-| `CacheAsidePattern.java`   | 缓存策略 | Cache-Aside、Write-Through |
+| 文件                                               | 主题     | 核心知识点                 |
+| -------------------------------------------------- | -------- | -------------------------- |
+| [CacheAsidePattern.java](./CacheAsidePattern.java) | 缓存策略 | Cache-Aside、Write-Through |
 
 ---
 
-## 🎯 实战项目：多数据源架构设计
+## 🚀 运行方式
 
-### 项目目标
+```bash
+# 进入项目目录
+cd /Users/perlou/Desktop/personal/java-course
 
-设计并实现一个多数据源架构系统，包括：
+# 编译项目
+javac -d target/classes src/main/java/phase17/*.java
 
-- 关系型数据库与 NoSQL 混合使用
-- 缓存层设计与一致性保证
-- 读写分离与分片策略
-- 数据同步与迁移方案
+# 运行课程（按学习顺序）
+java -cp target/classes phase17.RaftDemo
+java -cp target/classes phase17.ConsistencyModel
+java -cp target/classes phase17.TiDBDemo
+java -cp target/classes phase17.LSMTree
+java -cp target/classes phase17.CacheAsidePattern
+java -cp target/classes phase17.DataLakeDesign
+java -cp target/classes phase17.PolyglotPersistence
+```
 
-### 技术栈
+---
 
-- TiDB / MySQL
-- Redis / MongoDB
-- DataX / Canal（数据同步）
+## 📖 学习建议
+
+### 学习顺序
+
+```
+Week 1: 分布式数据库与一致性
+├── Day 1-2: CONCEPT.md + Raft 共识算法
+├── Day 3-4: 一致性模型对比
+├── Day 5-6: TiDB 架构与使用
+└── Day 7: 复习与总结
+
+Week 2: 存储架构与缓存
+├── Day 1-2: LSM-Tree 存储引擎
+├── Day 3-4: 数据湖架构设计
+├── Day 5: 多模存储选型
+├── Day 6: 缓存策略实践
+└── Day 7: 综合练习
+```
+
+### 核心知识点
+
+| 概念        | 描述                         |
+| ----------- | ---------------------------- |
+| Raft        | 易理解的分布式共识算法       |
+| 线性一致性  | 最强一致性，像单机一样       |
+| 最终一致性  | 允许短暂不一致，提升可用性   |
+| LSM-Tree    | 写优化存储结构，顺序写入     |
+| 数据湖      | 存储原始数据，Schema-on-Read |
+| Cache-Aside | 先读缓存，未命中读数据库回填 |
 
 ---
 
@@ -93,5 +136,10 @@
 - [ ] 能够解释 Raft 算法的核心流程
 - [ ] 理解 TiDB 的分布式事务实现
 - [ ] 掌握不同一致性模型的适用场景
+- [ ] 理解 LSM-Tree 的写入和读取流程
 - [ ] 能够设计多数据源架构方案
-- [ ] 完成多数据源架构设计项目
+- [ ] 掌握 Cache-Aside 缓存策略
+
+---
+
+> 📝 完成本阶段后，请更新 `LEARNING_PLAN.md`，然后进入 [Phase 18](../phase18/README.md)
