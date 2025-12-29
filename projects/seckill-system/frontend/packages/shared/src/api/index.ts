@@ -1,0 +1,7 @@
+export { request } from "./request";
+export { userApi } from "./user";
+export { productApi } from "./product";
+export { orderApi } from "./order";
+export { seckillApi } from "./seckill";
+export { reportApi } from "./report";
+export { monitorApi } from "./monitor";

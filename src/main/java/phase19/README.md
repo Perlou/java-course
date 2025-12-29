@@ -23,19 +23,17 @@
 
 #### 认证与授权
 
-| 文件                 | 主题           | 核心知识点                   |
-| -------------------- | -------------- | ---------------------------- |
-| `OAuth2InDepth.java` | OAuth2 深入    | 授权码流程、PKCE、Token 管理 |
-| `OIDCDemo.java`      | OpenID Connect | ID Token、UserInfo、SSO      |
-| `RBACDesign.java`    | RBAC 权限设计  | 角色、权限、资源控制         |
+| 文件                                       | 主题          | 核心知识点                   |
+| ------------------------------------------ | ------------- | ---------------------------- |
+| [OAuth2InDepth.java](./OAuth2InDepth.java) | OAuth2 深入   | 授权码流程、PKCE、Token 管理 |
+| [RBACDesign.java](./RBACDesign.java)       | RBAC 权限设计 | 角色、权限、ABAC             |
 
 #### 零信任与数据安全
 
-| 文件                  | 主题         | 核心知识点                   |
-| --------------------- | ------------ | ---------------------------- |
-| `ZeroTrustArch.java`  | 零信任架构   | 持续验证、最小权限           |
-| `DataEncryption.java` | 数据加密策略 | 传输加密、存储加密、密钥管理 |
-| `SecureCoding.java`   | 安全编码     | OWASP Top 10、SQL 注入防护   |
+| 文件                                       | 主题       | 核心知识点                  |
+| ------------------------------------------ | ---------- | --------------------------- |
+| [ZeroTrustArch.java](./ZeroTrustArch.java) | 零信任架构 | 持续验证、最小权限          |
+| [SecureCoding.java](./SecureCoding.java)   | 安全编码   | OWASP Top 10、SQL 注入、XSS |
 
 ---
 

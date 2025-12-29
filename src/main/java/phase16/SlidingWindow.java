@@ -126,7 +126,7 @@ public class SlidingWindow {
         System.out.println("滑动窗口计数器: 限制 10 请求/秒");
         System.out.println();
 
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 20; i++) {
             boolean success = counter.tryAcquire();
             System.out.printf("  请求 %2d: %s (当前: %d)%n",
                     i, success ? "✅ 通过" : "❌ 拒绝", counter.getCurrentCount());
@@ -168,7 +168,7 @@ public class SlidingWindow {
         System.out.println("优点: 精确 | 缺点: 内存消耗大");
         System.out.println();
 
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 30; i++) {
             boolean result = log.tryAcquire();
             System.out.printf("  请求 %d: %s%n", i, result ? "✅ 通过" : "❌ 拒绝");
             try {

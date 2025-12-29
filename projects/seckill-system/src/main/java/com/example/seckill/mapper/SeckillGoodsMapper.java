@@ -19,8 +19,7 @@ public interface SeckillGoodsMapper extends BaseMapper<SeckillGoods> {
      */
     default List<SeckillGoods> selectOngoingGoods() {
         return selectList(new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<SeckillGoods>()
-                .eq(SeckillGoods::getStatus, 1)
-                .gt(SeckillGoods::getStockCount, 0));
+                .eq(SeckillGoods::getStatus, 1));
     }
 
     /**

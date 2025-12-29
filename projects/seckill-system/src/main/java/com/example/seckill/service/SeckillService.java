@@ -196,4 +196,65 @@ public class SeckillService {
         redisTemplate.opsForValue().increment(stockKey);
         redisTemplate.opsForSet().remove(boughtKey, userId.toString());
     }
+
+    // ========== 管理接口 ==========
+
+    /**
+     * 创建秒杀商品
+     */
+    public SeckillGoods createSeckillGoods(SeckillGoods goods) {
+        goods.setStatus(1); // 默认进行中
+        goodsMapper.insert(goods);
+
+        // 同步库存到 Redis
+        String stockKey = "seckill:stock:" + goods.getId();
+        redisTemplate.opsForValue().set(stockKey, String.valueOf(goods.getStockCount()));
+
+        log.info("创建秒杀商品成功: id={}, name={}", goods.getId(), goods.getGoodsName());
+        return goods;
+    }
+
+    /**
+     * 更新秒杀商品
+     */
+    public SeckillGoods updateSeckillGoods(SeckillGoods goods) {
+        goodsMapper.updateById(goods);
+
+        // 同步库存到 Redis
+        if (goods.getStockCount() != null) {
+            String stockKey = "seckill:stock:" + goods.getId();
+            redisTemplate.opsForValue().set(stockKey, String.valueOf(goods.getStockCount()));
+        }
+
+        // 清除售罄标记
+        localSoldOutMap.remove(goods.getId());
+
+        log.info("更新秒杀商品成功: id={}", goods.getId());
+        return goodsMapper.selectById(goods.getId());
+    }
+
+    /**
+     * 删除秒杀商品
+     */
+    public void deleteSeckillGoods(Long goodsId) {
+        goodsMapper.deleteById(goodsId);
+
+        // 清除 Redis 数据
+        String stockKey = "seckill:stock:" + goodsId;
+        String boughtKey = "seckill:bought:" + goodsId;
+        redisTemplate.delete(stockKey);
+        redisTemplate.delete(boughtKey);
+
+        // 清除本地标记
+        localSoldOutMap.remove(goodsId);
+
+        log.info("删除秒杀商品成功: id={}", goodsId);
+    }
+
+    /**
+     * 获取所有秒杀订单
+     */
+    public List<SeckillOrder> listSeckillOrders() {
+        return orderMapper.selectAllOrders();
+    }
 }

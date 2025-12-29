@@ -5,12 +5,23 @@ spring:
   application:
     name: seckill-system
 
-  # 数据源配置
+  # 数据源配置 (Phase 13: HikariCP 最佳实践)
   datasource:
-    url: jdbc:mysql://localhost:3307/seckill?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3307/seckill?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&prepStmtCacheSize=250
     username: seckill
     password: seckill123
     driver-class-name: com.mysql.cj.jdbc.Driver
+    # ========== HikariCP 连接池优化配置 ==========
+    hikari:
+      # 连接池大小 = (CPU核心数 × 2) + 有效磁盘数 ≈ 10
+      maximum-pool-size: 10
+      minimum-idle: 10 # 建议与 max 相同，避免动态调整开销
+      connection-timeout: 30000 # 获取连接超时 30s
+      idle-timeout: 600000 # 空闲连接存活 10 分钟
+      max-lifetime: 1800000 # 连接最大生命周期 30 分钟
+      pool-name: SeckillHikariPool
+      # 连接验证
+      connection-test-query: SELECT 1
 
   # Flyway 配置
   flyway:
@@ -57,11 +68,25 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
+# ========== Phase 13: Actuator 监控端点 ==========
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,hikaricp
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 # 日志配置
 logging:
   level:
     com.example.seckill: debug
     org.springframework.amqp: info
+    com.zaxxer.hikari: debug # 连接池日志
 
 # 秒杀配置
 seckill:
@@ -71,6 +96,13 @@ seckill:
   bought-key-prefix: "seckill:bought:"
   # 秒杀结果 key 前缀
   result-key-prefix: "seckill:result:"
+
+# ========== Phase 13: JVM 启动参数建议 ==========
+# java -server -Xms512m -Xmx512m \
+#   -XX:+UseG1GC -XX:MaxGCPauseMillis=200 \
+#   -XX:+HeapDumpOnOutOfMemoryError \
+#   -Xlog:gc*:file=gc.log:time:filecount=5,filesize=100m \
+#   -jar seckill-system.jar
 
 ---
 # H2 数据库配置 (开发测试用)

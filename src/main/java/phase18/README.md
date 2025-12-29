@@ -23,36 +23,29 @@
 
 #### 分布式追踪
 
-| 文件                           | 主题            | 核心知识点                    |
-| ------------------------------ | --------------- | ----------------------------- |
-| `SkyWalkingDemo.java`          | SkyWalking 集成 | Java Agent、自动探针          |
-| `JaegerDemo.java`              | Jaeger 追踪     | OpenTracing、采样策略         |
-| `TraceContextPropagation.java` | 上下文传播      | W3C Trace Context、跨服务传递 |
+| 文件                                                 | 主题     | 核心知识点                            |
+| ---------------------------------------------------- | -------- | ------------------------------------- |
+| [DistributedTracing.java](./DistributedTracing.java) | 链路追踪 | OpenTelemetry、Trace/Span、上下文传播 |
 
 #### 指标监控
 
-| 文件                     | 主题            | 核心知识点                |
-| ------------------------ | --------------- | ------------------------- |
-| `PrometheusMetrics.java` | Prometheus 指标 | Counter、Gauge、Histogram |
-| `MicrometerDemo.java`    | Micrometer 集成 | 多后端适配、维度指标      |
-| `GrafanaDashboard.java`  | Grafana 可视化  | Dashboard 设计、告警配置  |
+| 文件                                               | 主题            | 核心知识点                        |
+| -------------------------------------------------- | --------------- | --------------------------------- |
+| [PrometheusMetrics.java](./PrometheusMetrics.java) | Prometheus 指标 | Counter、Gauge、Histogram、PromQL |
 
 ### 第 32 周：日志与告警
 
 #### 日志系统
 
-| 文件                     | 主题           | 核心知识点                      |
-| ------------------------ | -------------- | ------------------------------- |
-| `ELKStackDemo.java`      | ELK Stack 集成 | Elasticsearch、Logstash、Kibana |
-| `StructuredLogging.java` | 结构化日志     | JSON 日志、上下文传递           |
-| `LogAggregation.java`    | 日志聚合       | Fluentd、日志采集               |
+| 文件                                               | 主题       | 核心知识点                |
+| -------------------------------------------------- | ---------- | ------------------------- |
+| [StructuredLogging.java](./StructuredLogging.java) | 结构化日志 | JSON 格式、ELK Stack、MDC |
 
 #### 告警体系
 
-| 文件                | 主题         | 核心知识点           |
-| ------------------- | ------------ | -------------------- |
-| `AlertRules.java`   | 告警规则设计 | 阈值告警、异常检测   |
-| `OnCallSystem.java` | On-Call 体系 | 值班轮转、escalation |
+| 文件                                 | 主题         | 核心知识点              |
+| ------------------------------------ | ------------ | ----------------------- |
+| [AlertRules.java](./AlertRules.java) | 告警规则设计 | 阈值告警、分级、On-Call |
 
 ---
 

@@ -77,4 +77,48 @@ public class SeckillController {
         seckillService.resetSeckill(goodsId);
         return Result.success("重置成功");
     }
+
+    // ========== 管理接口 ==========
+
+    /**
+     * 创建秒杀商品
+     */
+    @PostMapping("/goods")
+    @Operation(summary = "创建秒杀商品")
+    public Result<SeckillGoods> createGoods(@RequestBody SeckillGoods goods) {
+        SeckillGoods created = seckillService.createSeckillGoods(goods);
+        return Result.success(created);
+    }
+
+    /**
+     * 更新秒杀商品
+     */
+    @PutMapping("/goods/{goodsId}")
+    @Operation(summary = "更新秒杀商品")
+    public Result<SeckillGoods> updateGoods(
+            @PathVariable Long goodsId,
+            @RequestBody SeckillGoods goods) {
+        goods.setId(goodsId);
+        SeckillGoods updated = seckillService.updateSeckillGoods(goods);
+        return Result.success(updated);
+    }
+
+    /**
+     * 删除秒杀商品
+     */
+    @DeleteMapping("/goods/{goodsId}")
+    @Operation(summary = "删除秒杀商品")
+    public Result<String> deleteGoods(@PathVariable Long goodsId) {
+        seckillService.deleteSeckillGoods(goodsId);
+        return Result.success("删除成功");
+    }
+
+    /**
+     * 获取秒杀订单列表
+     */
+    @GetMapping("/orders")
+    @Operation(summary = "获取秒杀订单列表")
+    public Result<List<com.example.seckill.entity.SeckillOrder>> listOrders() {
+        return Result.success(seckillService.listSeckillOrders());
+    }
 }

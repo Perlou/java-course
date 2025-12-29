@@ -1,7 +1,7 @@
-# 🗺️ Java 资深工程师 → 架构师 学习路线图
+# 🗺️ Java 资深工程师 → 架构师 → 大数据工程师 学习路线图
 
 > **当前状态**: 🚀 准备开始第 1 阶段 (Java 基础语法)  
-> **总体进度**: 0% (完成 0/20 阶段)
+> **总体进度**: 0% (完成 0/26 阶段)
 
 ## 📅 学习路径概览
 
@@ -12,6 +12,8 @@ graph TD
     classDef current fill:#fff3cd,stroke:#ffc107,stroke-width:4px;
     classDef future fill:#f8f9fa,stroke:#6c757d,stroke-width:2px,stroke-dasharray: 5 5;
     classDef architect fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef bigdata fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef llm fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,stroke-dasharray: 5 5;
 
     subgraph "第一部分：Java 基础夯实 (6-8周)"
         P1["Phase 1: Java 基础语法"]:::current
@@ -45,6 +47,18 @@ graph TD
         P20["Phase 20: 架构师实战"]:::architect
     end
 
+    subgraph "第五部分：大数据工程 (8周) 📊"
+        P21["Phase 21: Hadoop 生态"]:::bigdata
+        P22["Phase 22: Spark 全栈"]:::bigdata
+        P23["Phase 23: Flink 实时计算"]:::bigdata
+        P24["Phase 24: 数据仓库与治理"]:::bigdata
+    end
+
+    subgraph "第六部分：大模型应用 (4周) 🤖"
+        P25["Phase 25: LLM 与 LangChain"]:::llm
+        P26["Phase 26: RAG 与 Agent"]:::llm
+    end
+
     P1 --> P2
     P2 --> P3
     P3 --> P4
@@ -64,6 +78,12 @@ graph TD
     P17 --> P18
     P18 --> P19
     P19 --> P20
+    P20 --> P21
+    P21 --> P22
+    P22 --> P23
+    P23 --> P24
+    P24 --> P25
+    P25 --> P26
 ```
 
 ---
@@ -246,6 +266,22 @@ graph TD
 | **可观测平台**       | Phase 18 | 追踪、监控、日志    | ⏳ 待开始 |
 | **安全架构设计**     | Phase 19 | OAuth2、零信任      | ⏳ 待开始 |
 | **大型系统架构设计** | Phase 20 | 综合架构设计        | ⏳ 待开始 |
+
+### 大数据工程师阶段 📊
+
+| 项目                 | 对应阶段 | 核心技术点               | 状态      |
+| :------------------- | :------- | :----------------------- | :-------- |
+| **日志分析系统**     | Phase 21 | HDFS、MapReduce、YARN    | ⏳ 待开始 |
+| **实时数据分析平台** | Phase 22 | Spark Core/SQL/Streaming | ⏳ 待开始 |
+| **实时风控系统**     | Phase 23 | Flink、CEP、状态管理     | ⏳ 待开始 |
+| **企业级数仓建设**   | Phase 24 | Hive、数据湖、数据治理   | ⏳ 待开始 |
+
+### 大模型应用开发阶段 🤖
+
+| 项目               | 对应阶段 | 核心技术点               | 状态      |
+| :----------------- | :------- | :----------------------- | :-------- |
+| **智能客服机器人** | Phase 25 | LangChain4j、Prompt 工程 | ⏳ 待开始 |
+| **企业知识库问答** | Phase 26 | RAG、向量库、Agent       | ⏳ 待开始 |
 
 ---
 

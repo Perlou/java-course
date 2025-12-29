@@ -1,152 +1,166 @@
-# 🔥 秒杀系统 - Phase 12 实战项目
+# 🛒 商城系统 - Phase 11 + 12 + 13 综合实战项目
 
-> 综合运用 Redis + RabbitMQ + 分布式锁 实现高并发秒杀系统
+> **Phase 11**: 订单管理 - 用户、商品、订单、报表  
+> **Phase 12**: 秒杀系统 - Redis + RabbitMQ + 分布式锁  
+> **Phase 13**: 性能调优 - JVM 监控、Caffeine 缓存、连接池优化
+
+---
 
 ## 📋 项目概述
 
-本项目是 Phase 12 的实战项目，演示如何使用 Redis、RabbitMQ 和分布式锁解决高并发场景下的库存扣减问题。
+这是一个完整的商城系统，综合运用了 Phase 11-13 的技术栈：
 
-### 技术栈
+| 阶段     | 功能模块            | 技术要点                      |
+| -------- | ------------------- | ----------------------------- |
+| Phase 11 | 用户/商品/订单/报表 | MyBatis-Plus、事务、乐观锁    |
+| Phase 12 | 秒杀抢购            | Redis Lua 脚本、RabbitMQ 异步 |
+| Phase 13 | 性能监控            | JVM 监控、Caffeine、HikariCP  |
 
-- **Spring Boot 3.2** - 应用框架
-- **Redis** - 库存缓存、Lua 脚本原子操作
-- **RabbitMQ** - 异步下单、削峰填谷
-- **MyBatis-Plus** - 数据访问
-- **MySQL** - 数据持久化
-- **Redisson** - 分布式锁 (备用)
+---
 
-## 🏗️ 项目结构
+## 🛠️ 技术栈
+
+| 技术             | 用途                |
+| ---------------- | ------------------- |
+| Spring Boot 3.2  | 应用框架            |
+| MyBatis-Plus     | ORM 增强            |
+| MySQL + HikariCP | 数据库 + 连接池优化 |
+| Redis + Redisson | 缓存 + 分布式锁     |
+| RabbitMQ         | 消息队列            |
+| Caffeine         | 本地缓存            |
+| Spring Actuator  | 监控端点            |
+| Swagger          | API 文档            |
+
+---
+
+## 📁 项目结构
 
 ```
 seckill-system/
 ├── src/main/java/com/example/seckill/
-│   ├── SeckillApplication.java     # 启动类
-│   ├── controller/                  # 接口层
-│   │   └── SeckillController.java
-│   ├── service/                     # 服务层
-│   │   ├── SeckillService.java      # 秒杀核心服务
-│   │   └── StockInitializer.java    # 库存预热
-│   ├── mq/                          # 消息队列
-│   │   ├── SeckillMessage.java
-│   │   ├── SeckillMessageProducer.java
-│   │   └── SeckillMessageConsumer.java
-│   ├── mapper/                      # 数据访问
-│   ├── entity/                      # 实体类
-│   ├── config/                      # 配置类
-│   └── common/                      # 通用类
+│   ├── controller/
+│   │   ├── UserController.java       # 用户接口
+│   │   ├── ProductController.java    # 商品接口
+│   │   ├── OrderController.java      # 订单接口
+│   │   ├── ReportController.java     # 报表接口
+│   │   ├── SeckillController.java    # 秒杀接口
+│   │   └── MonitorController.java    # 监控接口
+│   ├── service/
+│   ├── entity/
+│   ├── mapper/
+│   ├── dto/
+│   ├── monitor/                      # Phase 13: 性能监控
+│   ├── mq/                           # Phase 12: 消息队列
+│   ├── config/
+│   └── common/
 ├── src/main/resources/
-│   ├── application.yml              # 应用配置
-│   ├── lua/seckill.lua              # Lua 脚本
-│   ├── db/migration/                # 数据库迁移
-│   └── static/index.html            # 前端页面
-└── docker-compose.yml               # Docker 环境
+│   ├── application.yml
+│   ├── db/migration/                 # Flyway 迁移
+│   │   ├── V1__Init_seckill_tables.sql
+│   │   └── V2__Add_mall_tables.sql
+│   └── lua/seckill.lua
+├── frontend/                         # React 前端
+└── docker-compose.yml
 ```
 
-## 🚀 快速开始
+---
 
-### 1. 启动基础设施
+## 🚀 快速开始
 
 ```bash
 cd /Users/perlou/Desktop/personal/java-course/projects/seckill-system
 
-# 启动 MySQL + Redis + RabbitMQ
+# 启动基础设施
 docker-compose up -d
 
-# 等待服务启动完成
-docker-compose ps
-```
-
-### 2. 启动应用
-
-```bash
-# 方式一：Maven 启动
+# 启动应用
 mvn spring-boot:run
-
-# 方式二：IDEA 启动
-# 运行 SeckillApplication.java
 ```
 
-### 3. 访问系统
+**访问地址：**
 
-- **前端页面**: http://localhost:8080
-- **Swagger 文档**: http://localhost:8080/swagger-ui.html
-- **RabbitMQ 管理**: http://localhost:15673 (admin/admin123)
+- 前端页面: http://localhost:8080
+- Swagger 文档: http://localhost:8080/swagger-ui.html
 
-## 📡 API 接口
+---
 
-| 方法 | 路径                                     | 描述              |
-| ---- | ---------------------------------------- | ----------------- |
-| GET  | `/api/seckill/goods`                     | 获取秒杀商品列表  |
-| GET  | `/api/seckill/goods/{id}`                | 获取商品详情      |
-| POST | `/api/seckill/do?userId=1&goodsId=1`     | 执行秒杀          |
-| GET  | `/api/seckill/result?userId=1&goodsId=1` | 查询秒杀结果      |
-| POST | `/api/seckill/reset/{id}`                | 重置秒杀 (测试用) |
+## 📡 API 接口汇总
 
-## 🔧 核心实现
-
-### 1. Lua 脚本原子扣减
-
-```lua
--- 检查库存
-local stock = tonumber(redis.call('GET', KEYS[1]))
-if stock <= 0 then return 0 end
-
--- 检查是否已购买
-local bought = redis.call('SISMEMBER', KEYS[2], ARGV[1])
-if bought == 1 then return -1 end
-
--- 扣减库存 + 记录购买
-redis.call('DECR', KEYS[1])
-redis.call('SADD', KEYS[2], ARGV[1])
-return 1
-```
-
-### 2. 异步下单流程
-
-```
-用户请求 -> Redis Lua 扣库存 -> 发送 MQ 消息 -> 返回"排队中"
-                                    |
-                                    v
-                         消费者异步创建订单 -> 更新结果到 Redis
-                                    |
-                                    v
-                              用户轮询结果
-```
-
-## 🧪 测试
-
-### 并发测试
-
-使用 JMeter 或 curl 进行并发测试：
+### 用户模块 `/api/users`
 
 ```bash
-# 模拟多用户秒杀
-for i in {1..10}; do
-  curl -X POST "http://localhost:8080/api/seckill/do?userId=$i&goodsId=1" &
-done
-wait
-
-# 查看库存
-curl http://localhost:8080/api/seckill/goods/1
+POST /api/users/register?username=test&password=123456  # 注册
+POST /api/users/login?username=admin&password=123456    # 登录
 ```
 
-### 重置测试
+### 商品模块 `/api/products`
 
 ```bash
-# 重置商品1的秒杀状态
-curl -X POST http://localhost:8080/api/seckill/reset/1
+GET  /api/products           # 商品列表
+GET  /api/products/{id}      # 商品详情
+POST /api/products           # 创建商品
 ```
+
+### 订单模块 `/api/orders`
+
+```bash
+POST /api/orders             # 创建订单
+POST /api/orders/{id}/pay    # 支付订单
+POST /api/orders/{id}/cancel # 取消订单
+GET  /api/orders/user/{uid}  # 用户订单
+```
+
+### 报表模块 `/api/reports`
+
+```bash
+GET /api/reports/sales?startDate=2024-01-01&endDate=2024-12-31
+GET /api/reports/top-products?days=30&limit=10
+```
+
+### 秒杀模块 `/api/seckill`
+
+```bash
+GET  /api/seckill/goods      # 秒杀商品列表
+POST /api/seckill/do?userId=1&goodsId=1  # 秒杀抢购
+```
+
+### 监控模块 `/api/monitor`
+
+```bash
+GET /api/monitor/dashboard   # 综合监控面板
+GET /api/monitor/jvm         # JVM 信息
+GET /api/monitor/cache/stats # 缓存统计
+GET /api/monitor/pool/datasource  # 连接池状态
+```
+
+---
 
 ## 📚 学习要点
 
-1. **Redis Lua 脚本** - 保证库存扣减的原子性
-2. **消息队列削峰** - 异步处理订单，降低数据库压力
-3. **本地内存标记** - 减少 Redis 访问，提升性能
-4. **乐观锁** - 数据库层面防止超卖
-5. **幂等性** - 防止重复消费
+### Phase 11: 数据库与 ORM
+
+- Flyway 数据库版本控制
+- MyBatis-Plus CRUD
+- 乐观锁防超卖
+- 事务管理
+
+### Phase 12: 高并发
+
+- Redis Lua 脚本原子操作
+- RabbitMQ 异步下单
+- 分布式锁
+
+### Phase 13: 性能调优
+
+- JVM 内存/GC 监控
+- Caffeine 多级缓存
+- HikariCP 连接池优化
+- 线程池配置
+
+---
 
 ## 🔗 相关文档
 
+- [Phase 11 - 数据库与 ORM](../../src/main/java/phase11/README.md)
 - [Phase 12 - Redis 缓存](../../src/main/java/phase12/README.md)
-- [DistributedLock.java](../../src/main/java/phase12/DistributedLock.java)
-- [SeckillProject.java (教学版)](../../src/main/java/phase12/SeckillProject.java)
+- [Phase 13 - 性能调优](../../src/main/java/phase13/README.md)

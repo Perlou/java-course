@@ -679,6 +679,207 @@
 
 ---
 
+### 阶段 21：大数据基础与 Hadoop 生态 (2 周) 📊
+
+> **目标**：掌握大数据基础理论与 Hadoop 核心组件
+
+#### 第 36 周：大数据基础
+
+- [ ] **大数据概念**
+
+  - 创建 `BigDataIntro.java`：大数据 5V 特性
+  - 创建 `DistributedComputing.java`：分布式计算原理
+  - 创建 `DataFormats.java`：大数据格式（Parquet、ORC、Avro）
+
+- [ ] **HDFS 分布式文件系统**
+  - 创建 `HdfsBasics.java`：HDFS 架构与原理
+  - 创建 `HdfsClient.java`：Java HDFS 客户端
+  - 创建 `HdfsHA.java`：HDFS 高可用
+
+#### 第 37 周：MapReduce 与 YARN
+
+- [ ] **MapReduce 编程**
+
+  - 创建 `MapReduceBasics.java`：MapReduce 模型
+  - 创建 `WordCount.java`：经典案例
+  - 创建 `CustomPartitioner.java`：自定义分区
+
+- [ ] **YARN 资源调度**
+
+  - 创建 `YarnArchitecture.java`：YARN 架构
+  - 创建 `ResourceScheduler.java`：调度策略
+  - 文档：`docs/HADOOP_ECOSYSTEM.md`
+
+- [ ] **实战项目**：日志分析系统
+
+---
+
+### 阶段 22：Spark 生态与实时计算 (2 周) ⚡
+
+> **目标**：掌握 Spark 生态系统与流处理
+
+#### 第 38 周：Spark Core 与 SparkSQL
+
+- [ ] **Spark 基础**
+
+  - 创建 `SparkBasics.java`：Spark 架构与 RDD
+  - 创建 `RddOperations.java`：RDD 转换与行动算子
+  - 创建 `SparkDAG.java`：DAG 执行引擎
+
+- [ ] **SparkSQL**
+  - 创建 `SparkSqlBasics.java`：DataFrame/Dataset API
+  - 创建 `SparkUdf.java`：自定义 UDF
+  - 创建 `SparkCatalyst.java`：Catalyst 优化器
+
+#### 第 39 周：Spark Streaming
+
+- [ ] **实时流处理**
+
+  - 创建 `StructuredStreaming.java`：结构化流处理
+  - 创建 `KafkaIntegration.java`：Kafka 集成
+  - 创建 `WindowOperations.java`：窗口操作
+
+- [ ] **Spark 调优**
+
+  - 创建 `SparkTuning.java`：性能调优
+  - 创建 `SparkMemory.java`：内存管理
+  - 文档：`docs/SPARK_BEST_PRACTICES.md`
+
+- [ ] **实战项目**：实时数据分析平台
+
+---
+
+### 阶段 23：Flink 实时计算 (2 周) 🌊
+
+> **目标**：掌握 Flink 流批一体架构
+
+#### 第 40 周：Flink 基础
+
+- [ ] **Flink 核心**
+
+  - 创建 `FlinkBasics.java`：Flink 架构
+  - 创建 `DataStreamApi.java`：DataStream API
+  - 创建 `FlinkWindow.java`：窗口机制
+  - 创建 `Watermark.java`：水印与事件时间
+
+- [ ] **状态管理**
+  - 创建 `FlinkState.java`：状态编程
+  - 创建 `StateBackend.java`：状态后端
+  - 创建 `Checkpoint.java`：检查点机制
+
+#### 第 41 周：Flink 高级
+
+- [ ] **Flink SQL**
+
+  - 创建 `FlinkSqlBasics.java`：Flink SQL
+  - 创建 `FlinkCep.java`：复杂事件处理
+
+- [ ] **Flink 生态**
+
+  - 创建 `FlinkCdc.java`：CDC 数据同步
+  - 创建 `FlinkIceberg.java`：Flink + Iceberg
+  - 文档：`docs/FLINK_ARCHITECTURE.md`
+
+- [ ] **实战项目**：实时风控系统
+
+---
+
+### 阶段 24：数据仓库与数据治理 (2 周) 🏢
+
+> **目标**：掌握数据仓库建设与数据治理
+
+#### 第 42 周：数据仓库
+
+- [ ] **数仓建模**
+
+  - 创建 `DwModeling.java`：维度建模
+  - 创建 `DwLayers.java`：数仓分层
+  - 创建 `SlowlyChangingDim.java`：缓慢变化维度
+
+- [ ] **Hive**
+  - 创建 `HiveBasics.java`：Hive 架构
+  - 创建 `HiveOptimization.java`：性能优化
+
+#### 第 43 周：数据湖与治理
+
+- [ ] **数据湖**
+
+  - 创建 `DataLakehouse.java`：Lakehouse 架构
+  - 创建 `DeltaLake.java`：Delta Lake
+  - 创建 `ApacheHudi.java`：Hudi 增量处理
+
+- [ ] **数据治理**
+
+  - 创建 `DataQuality.java`：数据质量
+  - 创建 `DataLineage.java`：数据血缘
+  - 文档：`docs/DATA_GOVERNANCE.md`
+
+- [ ] **综合实战项目**：企业级数据仓库建设
+
+---
+
+### 阶段 25：大模型基础与 LangChain (2 周) 🤖
+
+> **目标**：掌握大模型原理与 LangChain4j 框架
+
+#### 第 44 周：大模型基础
+
+- [ ] **LLM 核心概念**
+
+  - 创建 `LlmIntro.java`：大模型原理
+  - 创建 `PromptEngineering.java`：提示词工程
+  - 创建 `TokenizerDemo.java`：分词与 Token
+
+- [ ] **API 调用**
+  - 创建 `OpenAiClient.java`：OpenAI API
+  - 创建 `LocalLlm.java`：本地模型（Ollama）
+
+#### 第 45 周：LangChain4j 框架
+
+- [ ] **LangChain4j 核心**
+
+  - 创建 `LangChainBasics.java`：LangChain4j 入门
+  - 创建 `ChainDemo.java`：链式调用
+  - 创建 `MemoryDemo.java`：对话记忆
+  - 创建 `ToolsDemo.java`：工具调用
+
+- [ ] **实战项目**：智能客服机器人
+
+---
+
+### 阶段 26：RAG 与企业级应用 (2 周) 📚
+
+> **目标**：掌握 RAG 系统与 AI Agent 开发
+
+#### 第 46 周：RAG 检索增强生成
+
+- [ ] **向量数据库**
+
+  - 创建 `VectorIntro.java`：向量嵌入原理
+  - 创建 `MilvusDemo.java`：Milvus 向量库
+  - 创建 `PgVectorDemo.java`：PostgreSQL pgvector
+
+- [ ] **RAG 系统**
+  - 创建 `RagBasics.java`：RAG 架构
+  - 创建 `DocumentLoader.java`：文档切分
+  - 创建 `HybridSearch.java`：混合检索
+
+#### 第 47 周：AI Agent 与应用
+
+- [ ] **Agent 开发**
+
+  - 创建 `AgentBasics.java`：Agent 架构
+  - 创建 `ReActAgent.java`：ReAct 模式
+
+- [ ] **企业应用**
+
+  - 创建 `SpringAiDemo.java`：Spring AI 集成
+  - 创建 `LlmSecurity.java`：安全与合规
+
+- [ ] **综合实战项目**：企业知识库问答系统
+
+---
+
 ## 🎓 配套学习资源
 
 ### 必读书籍
@@ -860,6 +1061,22 @@
 | 31-32 | Phase 18 | 0/8        | 可观测平台       | ⏳ 待开始 |
 | 33    | Phase 19 | 0/6        | 安全架构设计     | ⏳ 待开始 |
 | 34-35 | Phase 20 | 0/10       | 大型系统架构设计 | ⏳ 待开始 |
+
+### 大数据工程师阶段 (Phase 21-24) 📊
+
+| 周次  | 阶段     | 完成文件数 | 实战项目         | 状态      |
+| ----- | -------- | ---------- | ---------------- | --------- |
+| 36-37 | Phase 21 | 0/10       | 日志分析系统     | ⏳ 待开始 |
+| 38-39 | Phase 22 | 0/10       | 实时数据分析平台 | ⏳ 待开始 |
+| 40-41 | Phase 23 | 0/10       | 实时风控系统     | ⏳ 待开始 |
+| 42-43 | Phase 24 | 0/10       | 企业级数仓建设   | ⏳ 待开始 |
+
+### 大模型应用开发阶段 (Phase 25-26) 🤖
+
+| 周次  | 阶段     | 完成文件数 | 实战项目       | 状态      |
+| ----- | -------- | ---------- | -------------- | --------- |
+| 44-45 | Phase 25 | 0/10       | 智能客服机器人 | ⏳ 待开始 |
+| 46-47 | Phase 26 | 0/10       | 企业知识库问答 | ⏳ 待开始 |
 
 ---
 
