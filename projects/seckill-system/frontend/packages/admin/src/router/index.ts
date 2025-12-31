@@ -50,6 +50,18 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/views/monitor/index.vue"),
         meta: { title: "性能监控", icon: "Monitor" },
       },
+      {
+        path: "observability",
+        name: "Observability",
+        component: () => import("@/views/observability/index.vue"),
+        meta: { title: "可观测性", icon: "View" },
+      },
+      {
+        path: "security",
+        name: "Security",
+        component: () => import("@/views/security/index.vue"),
+        meta: { title: "安全架构", icon: "Lock" },
+      },
     ],
   },
 ];

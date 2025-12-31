@@ -1,7 +1,9 @@
 package com.example.seckill.controller;
 
+import com.example.seckill.cache.MultiLevelCacheService;
 import com.example.seckill.common.Result;
 import com.example.seckill.monitor.*;
+import com.example.seckill.storage.LSMTreeSimulator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import java.util.Map;
 
 /**
  * Phase 13: 性能监控 API
+ * Phase 17: 增加多级缓存和分布式存储监控
  * 
  * 提供 JVM、缓存、连接池、线程池、SQL 性能的监控接口
  */
@@ -28,6 +31,10 @@ public class MonitorController {
     private final GcLogAnalyzer gcLogAnalyzer;
     private final PerformanceReportService performanceReportService;
 
+    // Phase 17: 多级缓存和分布式存储
+    private final MultiLevelCacheService multiLevelCacheService;
+    private final LSMTreeSimulator lsmTreeSimulator;
+
     public MonitorController(JvmMonitorService jvmMonitorService,
             CacheService cacheService,
             ConnectionPoolMonitor connectionPoolMonitor,
@@ -35,7 +42,9 @@ public class MonitorController {
             SqlPerformanceService sqlPerformanceService,
             PerformanceTestService performanceTestService,
             GcLogAnalyzer gcLogAnalyzer,
-            PerformanceReportService performanceReportService) {
+            PerformanceReportService performanceReportService,
+            MultiLevelCacheService multiLevelCacheService,
+            LSMTreeSimulator lsmTreeSimulator) {
         this.jvmMonitorService = jvmMonitorService;
         this.cacheService = cacheService;
         this.connectionPoolMonitor = connectionPoolMonitor;
@@ -44,6 +53,8 @@ public class MonitorController {
         this.performanceTestService = performanceTestService;
         this.gcLogAnalyzer = gcLogAnalyzer;
         this.performanceReportService = performanceReportService;
+        this.multiLevelCacheService = multiLevelCacheService;
+        this.lsmTreeSimulator = lsmTreeSimulator;
     }
 
     // ==================== JVM 监控 ====================
@@ -205,6 +216,8 @@ public class MonitorController {
         dashboard.put("cache_stats", cacheService.getCacheStats());
         dashboard.put("connection_pool", connectionPoolMonitor.getPoolStatus());
         dashboard.put("thread_pools", threadPoolMonitor.getAllPoolStatus());
+        // Phase 17: 多级缓存统计
+        dashboard.put("multilevel_cache", multiLevelCacheService.getStats());
         return Result.success(dashboard);
     }
 
@@ -212,5 +225,41 @@ public class MonitorController {
     @Operation(summary = "生成完整性能报告")
     public Result<Map<String, Object>> getPerformanceReport() {
         return Result.success(performanceReportService.generateFullReport());
+    }
+
+    // ==================== Phase 17: 分布式存储监控 ====================
+
+    @GetMapping("/cache/multilevel")
+    @Operation(summary = "获取多级缓存统计", description = "Phase 17 - L1 Caffeine + L2 Redis 多级缓存命中率")
+    public Result<Map<String, Object>> getMultiLevelCacheStats() {
+        return Result.success("多级缓存统计", multiLevelCacheService.getStats());
+    }
+
+    @PostMapping("/cache/multilevel/clear")
+    @Operation(summary = "清空多级缓存 L1 本地缓存")
+    public Result<String> clearMultiLevelCache() {
+        multiLevelCacheService.clearAll();
+        return Result.success("L1 本地缓存已清空", null);
+    }
+
+    @GetMapping("/storage/lsm")
+    @Operation(summary = "获取 LSM-Tree 模拟器状态", description = "Phase 17 - 查看 MemTable、SSTables 各层状态")
+    public Result<Map<String, Object>> getLSMTreeStatus() {
+        return Result.success("LSM-Tree 状态", lsmTreeSimulator.getStatus());
+    }
+
+    @GetMapping("/storage/stats")
+    @Operation(summary = "分布式存储架构状态", description = "Phase 17 - 综合存储架构状态")
+    public Result<Map<String, Object>> getStorageStats() {
+        Map<String, Object> stats = new LinkedHashMap<>();
+        stats.put("multiLevelCache", multiLevelCacheService.getStats());
+        stats.put("lsmTree", lsmTreeSimulator.getStatus());
+        stats.put("architecture", Map.of(
+                "L1_Cache", "Caffeine (本地内存)",
+                "L2_Cache", "Redis (分布式)",
+                "Database", "MySQL (持久化)",
+                "MessageQueue", "RabbitMQ (异步处理)",
+                "pattern", "Cache-Aside + 多级缓存"));
+        return Result.success("分布式存储架构状态", stats);
     }
 }
