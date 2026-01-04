@@ -7,8 +7,10 @@ import com.example.chatbot.tools.OrderTools;
 import com.example.chatbot.tools.ProductTools;
 import com.example.chatbot.tools.TicketTools;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.azure.AzureOpenAiChatModel;
 import dev.langchain4j.service.AiServices;
 
 import java.time.Duration;
@@ -16,13 +18,22 @@ import java.time.Duration;
 /**
  * 应用配置类
  * 
- * 负责创建和配置所有组件
+ * 支持多种大模型提供商：
+ * - Gemini (默认)
+ * - OpenAI
+ * - Azure OpenAI
+ * - Ollama (本地)
+ * - Demo (演示模式)
  */
 public class AppConfig {
 
-    // 模型类型
+    /**
+     * 模型类型枚举
+     */
     public enum ModelType {
+        GEMINI, // Google Gemini (默认)
         OPENAI, // OpenAI API
+        AZURE, // Azure OpenAI
         OLLAMA, // 本地 Ollama
         DEMO // 演示模式（Mock）
     }
@@ -50,10 +61,38 @@ public class AppConfig {
      */
     private ChatLanguageModel createChatModel() {
         return switch (modelType) {
+            case GEMINI -> createGeminiModel();
             case OPENAI -> createOpenAiModel();
+            case AZURE -> createAzureOpenAiModel();
             case OLLAMA -> createOllamaModel();
             case DEMO -> createDemoModel();
         };
+    }
+
+    /**
+     * 创建 Google Gemini 模型 (默认)
+     */
+    private ChatLanguageModel createGeminiModel() {
+        String apiKey = System.getenv("GEMINI_API_KEY");
+        if (apiKey == null || apiKey.isEmpty()) {
+            apiKey = System.getenv("GOOGLE_AI_API_KEY");
+        }
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            System.err.println("⚠️ 未设置 GEMINI_API_KEY，切换到演示模式");
+            return createDemoModel();
+        }
+
+        String modelName = System.getenv().getOrDefault("GEMINI_MODEL", "gemini-1.5-flash");
+
+        System.out.println("🚀 使用 Gemini 模型: " + modelName);
+
+        return GoogleAiGeminiChatModel.builder()
+                .apiKey(apiKey)
+                .modelName(modelName)
+                .temperature(0.7)
+                .timeout(Duration.ofSeconds(60))
+                .build();
     }
 
     /**
@@ -66,9 +105,44 @@ public class AppConfig {
             return createDemoModel();
         }
 
-        return OpenAiChatModel.builder()
+        String modelName = System.getenv().getOrDefault("OPENAI_MODEL", "gpt-4o");
+        String baseUrl = System.getenv("OPENAI_BASE_URL"); // 支持自定义 endpoint
+
+        System.out.println("🚀 使用 OpenAI 模型: " + modelName);
+
+        var builder = OpenAiChatModel.builder()
                 .apiKey(apiKey)
-                .modelName("gpt-4")
+                .modelName(modelName)
+                .temperature(0.7)
+                .timeout(Duration.ofSeconds(60))
+                .maxRetries(3);
+
+        if (baseUrl != null && !baseUrl.isEmpty()) {
+            builder.baseUrl(baseUrl);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * 创建 Azure OpenAI 模型
+     */
+    private ChatLanguageModel createAzureOpenAiModel() {
+        String apiKey = System.getenv("AZURE_OPENAI_API_KEY");
+        String endpoint = System.getenv("AZURE_OPENAI_ENDPOINT");
+        String deploymentName = System.getenv().getOrDefault("AZURE_OPENAI_DEPLOYMENT", "gpt-4");
+
+        if (apiKey == null || apiKey.isEmpty() || endpoint == null || endpoint.isEmpty()) {
+            System.err.println("⚠️ 未设置 AZURE_OPENAI_API_KEY 或 AZURE_OPENAI_ENDPOINT，切换到演示模式");
+            return createDemoModel();
+        }
+
+        System.out.println("🚀 使用 Azure OpenAI 部署: " + deploymentName);
+
+        return AzureOpenAiChatModel.builder()
+                .apiKey(apiKey)
+                .endpoint(endpoint)
+                .deploymentName(deploymentName)
                 .temperature(0.7)
                 .timeout(Duration.ofSeconds(60))
                 .maxRetries(3)
@@ -81,6 +155,8 @@ public class AppConfig {
     private ChatLanguageModel createOllamaModel() {
         String baseUrl = System.getenv().getOrDefault("OLLAMA_URL", "http://localhost:11434");
         String modelName = System.getenv().getOrDefault("OLLAMA_MODEL", "llama3");
+
+        System.out.println("🚀 使用 Ollama 模型: " + modelName + " @ " + baseUrl);
 
         try {
             return OllamaChatModel.builder()
@@ -100,7 +176,6 @@ public class AppConfig {
      */
     private ChatLanguageModel createDemoModel() {
         System.out.println("📌 运行在演示模式（无实际 LLM 调用）");
-        // 返回一个简单的 Mock 模型
         return new DemoChatModel(orderTools, productTools, ticketTools, faqRetriever);
     }
 
@@ -109,7 +184,6 @@ public class AppConfig {
      */
     public CustomerServiceBot createChatbot() {
         if (modelType == ModelType.DEMO) {
-            // 演示模式使用特殊处理
             return createDemoChatbot();
         }
 
@@ -128,6 +202,41 @@ public class AppConfig {
             DemoChatModel demo = (DemoChatModel) chatModel;
             return demo.processMessage(message);
         };
+    }
+
+    /**
+     * 解析模型类型字符串
+     */
+    public static ModelType parseModelType(String type) {
+        if (type == null || type.isEmpty()) {
+            return ModelType.GEMINI; // 默认使用 Gemini
+        }
+        return switch (type.toLowerCase()) {
+            case "gemini", "google" -> ModelType.GEMINI;
+            case "openai", "gpt" -> ModelType.OPENAI;
+            case "azure", "azure-openai" -> ModelType.AZURE;
+            case "ollama", "local" -> ModelType.OLLAMA;
+            case "demo", "mock" -> ModelType.DEMO;
+            default -> {
+                System.out.println("⚠️ 未知模型类型: " + type + "，使用默认 Gemini");
+                yield ModelType.GEMINI;
+            }
+        };
+    }
+
+    /**
+     * 打印支持的模型信息
+     */
+    public static void printSupportedModels() {
+        System.out.println("╔══════════════════════════════════════════════════════════╗");
+        System.out.println("║                  支持的模型提供商                        ║");
+        System.out.println("╠══════════════════════════════════════════════════════════╣");
+        System.out.println("║  gemini   │ Google Gemini (默认)     │ GEMINI_API_KEY   ║");
+        System.out.println("║  openai   │ OpenAI GPT               │ OPENAI_API_KEY   ║");
+        System.out.println("║  azure    │ Azure OpenAI             │ AZURE_OPENAI_*   ║");
+        System.out.println("║  ollama   │ Ollama 本地模型          │ 无需 API Key     ║");
+        System.out.println("║  demo     │ 演示模式                 │ 无需 API Key     ║");
+        System.out.println("╚══════════════════════════════════════════════════════════╝");
     }
 
     // Getters

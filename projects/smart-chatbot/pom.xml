@@ -42,6 +42,20 @@
             <version>${langchain4j.version}</version>
         </dependency>
 
+        <!-- Google Gemini 支持 -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-google-ai-gemini</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <!-- Azure OpenAI 支持 -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-azure-open-ai</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
         <!-- 内存向量存储 (用于简化版 RAG) -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
