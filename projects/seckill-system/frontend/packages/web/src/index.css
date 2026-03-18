@@ -1,3 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  /* ===== Primary Gradient Colors (Background) ===== */
+  --color-primary-from: #667eea;
+  --color-primary-via: #764ba2;
+  --color-primary-to: #f093fb;
+  
+  /* ===== Accent Colors (CTA Buttons, Badges) ===== */
+  --color-accent-400: #f87171;
+  --color-accent-500: #ef4444;
+  --color-accent-600: #dc2626;
+  --color-accent-700: #b91c1c;
+  
+  /* ===== Success Colors ===== */
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  
+  /* ===== Warning Colors ===== */
+  --color-warning-500: #f97316;
+  --color-warning-600: #ea580c;
+}
+
+/* ===== Global Styles ===== */
 * {
   margin: 0;
   padding: 0;
@@ -31,7 +55,7 @@ input {
   font-family: inherit;
 }
 
-/* 滚动条美化 */
+/* ===== Scrollbar Customization ===== */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -50,7 +74,7 @@ input {
   background: #94a3b8;
 }
 
-/* 选中文字颜色 */
+/* ===== Selection Color ===== */
 ::selection {
   background: rgba(102, 126, 234, 0.3);
 }

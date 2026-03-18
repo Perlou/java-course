@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "mysql_server": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@benborla29/mcp-server-mysql"
+      ],
+      "env": {
+        "MYSQL_HOST": "127.0.0.1",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "root",
+        "MYSQL_PASS": "root123456",
+        "MYSQL_DB": "turbox_exchange"
+      }
+    },
+    "redis_server": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-redis",
+        "redis://:redis123456@127.0.0.1:6379"
+      ],
+      "env": {}
+    },
+    "docker_server": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "docker-mcp"
+      ],
+      "env": {}
+    }
+  }
+}

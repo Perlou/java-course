@@ -11,11 +11,10 @@
 
 ## 📋 项目概述
 
-TurboX Exchange 是一个面向学习和开源的分布式交易平台，采用微服务架构，实现了撮合引擎、订单管理、账户系统、行情推送等核心交易功能。
+TurboX Exchange 是开源的分布式交易平台，采用微服务架构，实现了撮合引擎、订单管理、账户系统、行情推送等核心交易功能。
 
 ### 🎯 项目目标
 
-- **学习实践**：综合运用 Java 架构师课程所学知识
 - **开源分享**：提供可参考的交易系统实现方案
 - **生产可用**：遵循企业级开发规范，可作为二次开发基础
 
@@ -38,7 +37,9 @@ exchange-system/
 │   ├── PRD.md                     # 产品需求文档
 │   ├── ARCHITECTURE.md            # 技术架构文档
 │   ├── API.md                     # API 接口文档
-│   └── DEPLOYMENT.md              # 部署文档
+│   ├── DEPLOYMENT.md              # 部署文档
+│   ├── DATA-DICTIONARY.md         # 数据字典
+│   └── ROADMAP.md                 # 开发进度表
 ├── exchange-gateway/              # API 网关服务
 ├── exchange-user/                 # 用户服务
 ├── exchange-account/              # 账户服务
@@ -69,6 +70,9 @@ exchange-system/
 | 搜索引擎 | Elasticsearch 8.x                  |
 | 注册中心 | Nacos                              |
 | 网关     | Spring Cloud Gateway               |
+| 分库分表 | ShardingSphere-JDBC 5.x            |
+| 撮合队列 | LMAX Disruptor                     |
+| 序列化   | Protocol Buffers                   |
 | 文档     | SpringDoc OpenAPI                  |
 
 ### 前端
@@ -136,6 +140,8 @@ docker-compose up -d
 - [技术架构文档](docs/ARCHITECTURE.md)
 - [API 接口文档](docs/API.md)
 - [部署指南](docs/DEPLOYMENT.md)
+- [数据字典](docs/DATA-DICTIONARY.md)
+- [开发进度表](docs/ROADMAP.md)
 
 ---
 
